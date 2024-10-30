@@ -32,7 +32,7 @@ const CategoryCard = ({ title }) => (
   </View>
 );
 
-export default function homeScreen({ navigation }) {
+export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Header />
