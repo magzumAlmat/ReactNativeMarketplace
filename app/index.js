@@ -13,7 +13,7 @@ import HomeScreen from "./HomeScreen";
 
 import CategoryScreen from './CategoryScreen';
 import ProductListScreen from './ProductListScreen';
-
+import ProductScreen from './ProductScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -56,6 +56,7 @@ function HomeStack() {
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Category" component={CategoryScreen} />
       <Stack.Screen name="ProductList" component={ProductListScreen} />
+      <Stack.Screen name="ProductScreen" component={ProductScreen} />
     </Stack.Navigator>
   );
 }

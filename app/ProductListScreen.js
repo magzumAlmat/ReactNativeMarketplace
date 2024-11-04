@@ -1,28 +1,71 @@
 // ProductListScreen.js
-import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export default function ProductListScreen({ route }) {
   const { category } = route.params;
+  const [searchTerm, setSearchTerm] = useState('');
+  const [expandedCategoryId, setExpandedCategoryId] = useState(null);
+  const navigation = useNavigation();
 
-  // Пример списка товаров (можно заменить на ваши данные)
-  const products = [
-    { id: '1', name: 'Товар 1', price: '1000₸' },
-    { id: '2', name: 'Товар 2', price: '2000₸' },
-    { id: '3', name: 'Товар 3', price: '1500₸' },
-    { id: '4', name: 'Товар 4', price: '2500₸' },
+  const categories = [
+    {
+      id: '1',
+      name: 'Туалетная бумага и салфетки',
+      subcategories: [
+        'Туалетная бумага',
+        'Бумажные полотенца',
+        'Салфетки и платочки',
+        'Влажные салфетки',
+      ],
+    },
+    {
+      id: '2',
+      name: 'Для ванны и душа',
+      subcategories: [],
+    },
+    {
+      id: '3',
+      name: 'Уход за полостью рта',
+      subcategories: [],
+    },
   ];
+
+  const toggleAccordion = (categoryId) => {
+    setExpandedCategoryId(categoryId === expandedCategoryId ? null : categoryId);
+  };
+
+  const handleSubcategoryPress = (subcategory) => {
+    navigation.navigate('ProductScreen', { subcategory });
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Товары в категории: {category}</Text>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Поиск по каталогу"
+        value={searchTerm}
+        onChangeText={setSearchTerm}
+      />
+
       <FlatList
-        data={products}
+        data={categories}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.productCard}>
-            <Text style={styles.productName}>{item.name}</Text>
-            <Text style={styles.productPrice}>{item.price}</Text>
+          <View style={styles.categoryContainer}>
+            <TouchableOpacity onPress={() => toggleAccordion(item.id)}>
+              <Text style={styles.categoryName}>{item.name}</Text>
+            </TouchableOpacity>
+            {expandedCategoryId === item.id && item.subcategories.length > 0 && (
+              <View style={styles.subcategoriesContainer}>
+                {item.subcategories.map((sub, index) => (
+                  <TouchableOpacity key={index} onPress={() => handleSubcategoryPress(sub)}>
+                    <Text style={styles.subcategory}>{sub}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
           </View>
         )}
       />
@@ -31,15 +74,17 @@ export default function ProductListScreen({ route }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
-  productCard: {
-    padding: 16,
-    backgroundColor: '#fff',
+  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  searchInput: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
     borderRadius: 5,
-    marginBottom: 10,
-    elevation: 3,
+    paddingHorizontal: 10,
+    marginBottom: 20,
   },
-  productName: { fontSize: 16, fontWeight: '500' },
-  productPrice: { fontSize: 14, color: 'gray', marginTop: 5 },
+  categoryContainer: { marginBottom: 20 },
+  categoryName: { fontSize: 22, fontWeight: 'bold', color: '#333' },
+  subcategoriesContainer: { paddingLeft: 20, marginTop: 12 },
+  subcategory: { fontSize: 20, color: '#666', paddingBottom: 5 },
 });
