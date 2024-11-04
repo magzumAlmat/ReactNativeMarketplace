@@ -8,15 +8,13 @@ import { store } from '../store';
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Provider as PaperProvider } from "react-native-paper";
+
 import HomeScreen from "./HomeScreen";
 
-import { useSelector, useDispatch } from 'react-redux'
+import CategoryScreen from './CategoryScreen';
+import ProductListScreen from './ProductListScreen';
 
-import { useEffect } from 'react';
-
-import { fetchUserData } from '../store/slices/productSlice';
-
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const OrdersScreen = () => (
@@ -52,6 +50,17 @@ function SettingsScreen() {
   );
 }
 
+function HomeStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Category" component={CategoryScreen} />
+      <Stack.Screen name="ProductList" component={ProductListScreen} />
+    </Stack.Navigator>
+  );
+}
+
+
 export default function Page() {
 
   // useEffect(() => {
@@ -66,7 +75,7 @@ export default function Page() {
   
   return (
      <Provider store={store}>
-      <PaperProvider>
+ 
         <Tab.Navigator
           screenOptions={{
             tabBarActiveTintColor: '#DC2626',
@@ -83,15 +92,17 @@ export default function Page() {
               ),
             }}
           /> */}
-          <Tab.Screen 
-            name="Каталог" 
-            component={HomeScreen} 
+          <Tab.Screen
+            name="Каталог"
+            component={HomeStack} // Используем HomeStack вместо HomeScreen
             options={{
               tabBarIcon: ({ color, size }) => (
                 <Feather name="home" size={size} color={color} />
               ),
             }}
           />
+
+         
           <Tab.Screen 
             name="Мои заказы" 
             component={OrdersScreen}
@@ -129,7 +140,7 @@ export default function Page() {
             }}
           />
         </Tab.Navigator>
-    </PaperProvider>
+
    </Provider>
 
   );
