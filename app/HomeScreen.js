@@ -4,11 +4,34 @@ import { ShoppingCart, Heart, User, Clock, Home } from 'lucide-react';
 import { Feather } from '@expo/vector-icons';
 import { Searchbar ,Text} from 'react-native-paper';
 
+import { Provider } from 'react-redux';
+import { store } from '../store';
+
+import { useSelector, useDispatch } from 'react-redux'
+
+import { useEffect } from 'react';
+
+import { fetchUserData } from '../store/slices/productSlice';
+
+
 const categories = [
-  { id: '1', name: 'Electronics' },
-  { id: '2', name: 'Clothing' },
-  { id: '3', name: 'Home Goods' },
-];
+    { id: '1', name: 'Electronics' },
+    { id: '2', name: 'Clothing' },
+    { id: '3', name: 'Home Goods' },
+    { id: '4', name: 'Toys' },
+    { id: '5', name: 'Books' },
+    { id: '6', name: 'Furniture' },
+    { id: '7', name: 'Jewelry' },
+    { id: '8', name: 'Sporting Goods' },
+    { id: '9', name: 'Beauty' },
+    { id: '10', name: 'Groceries' },
+    { id: '11', name: 'Footwear' },
+    { id: '12', name: 'Accessories' },
+    { id: '13', name: 'Automotive' },
+    { id: '14', name: 'Gardening' },
+    { id: '15', name: 'Stationery' },
+    { id: '16', name: 'Pet Supplies' },
+  ];
 
 const Header = () => {
     const [searchQuery, setSearchQuery] = React.useState('');
@@ -33,7 +56,13 @@ const CategoryCard = ({ title }) => (
 );
 
 export default function HomeScreen({ navigation }) {
+
+  const testVarFromSlice = useSelector((state) => state.product.testVar)
+  const dispatch = useDispatch()
+
+  console.log(testVarFromSlice)
   return (
+    <Provider store={store}>
     <SafeAreaView style={styles.container}>
       <Header />
 
@@ -43,14 +72,20 @@ export default function HomeScreen({ navigation }) {
       </View>
 
       {/* Categories Grid */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
-        {categories.map((category) => (
-          <TouchableOpacity key={category.id} onPress={() => navigation.navigate('Category', { category: category.name })}>
-            <CategoryCard title={category.name} />
-          </TouchableOpacity>
-        ))}
+      <ScrollView contentContainerStyle={styles.categoriesContainer}>
+        <View style={styles.row}>
+          {categories.map((category) => (
+            <CategoryCard
+              key={category.id}
+              title={category.name}
+              onPress={() => navigation.navigate('Category', { category: category.name })}
+            />
+          ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
+    </Provider>
+   
   );
 }
 
@@ -69,31 +104,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
-  headerSubtitle: {
-    fontSize: 16,
-    color: '#888',
-  },
-  headerAddress: {
-    fontSize: 14,
-  },
-  headerDelivery: {
-    fontSize: 12,
-    color: '#555',
-  },
-  expressButton: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
-    marginVertical: 10,
-  },
-  expressButtonText: {
-    color: '#fff',
-    textAlign: 'center',
-  },
-  freeDelivery: {
-    fontSize: 12,
-    color: '#555',
-  },
   banner: {
     height: 200,
     justifyContent: 'center',
@@ -108,10 +118,16 @@ const styles = StyleSheet.create({
   categoriesContainer: {
     paddingVertical: 10,
   },
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
   categoryCard: {
+    width: '47%', // Each card will take about half the width
     backgroundColor: '#fff',
-    padding: 20,
-    margin: 5,
+    padding: 30,
+    marginVertical: 7,
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {
@@ -121,9 +137,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    alignItems: 'center',
   },
   categoryTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });

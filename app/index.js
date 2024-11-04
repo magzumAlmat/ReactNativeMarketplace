@@ -1,13 +1,21 @@
 import { View, Text, ScrollView, TextInput, TouchableOpacity, Image, SafeAreaView, StyleSheet } from 'react-native';
 import { ShoppingCart, Heart, User, Clock, Home } from 'lucide-react';
 import { Feather } from '@expo/vector-icons';
-
 import { Link } from "expo-router";
+
+import { Provider } from 'react-redux';
+import { store } from '../store';
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Provider as PaperProvider } from "react-native-paper";
 import HomeScreen from "./HomeScreen";
+
+import { useSelector, useDispatch } from 'react-redux'
+
+import { useEffect } from 'react';
+
+import { fetchUserData } from '../store/slices/productSlice';
 
 const Tab = createBottomTabNavigator();
 
@@ -45,82 +53,87 @@ function SettingsScreen() {
 }
 
 export default function Page() {
+
+  // useEffect(() => {
+  //   dispatch(fetchUserData());
+  // }, [dispatch]);
+
+
+  // const testVarFromSlice = useSelector((state) => state.product.testVar)
+  // const dispatch = useDispatch()
+
+  // console.log(testVarFromSlice)
+  
   return (
-    <PaperProvider>
-    <Tab.Navigator
-      screenOptions={{
-        tabBarActiveTintColor: '#DC2626',
-        tabBarInactiveTintColor: 'gray',
-        headerShown: false,
-      }}
-    >
-      {/* <Tab.Screen 
-        name="Settings" 
-        component={SettingsScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Feather name="settings" size={size} color={color} />
-          ),
-        }}
-      /> */}
-      <Tab.Screen 
-        name="Каталог" 
-        component={HomeScreen} 
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Feather name="home" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen 
-        name="Мои заказы" 
-        component={OrdersScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Feather name="clock" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen 
-        name="Избранное" 
-        component={FavoritesScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Feather name="heart" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen 
-        name="Профиль" 
-        component={ProfileScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Feather name="user" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen 
-        name="Корзина" 
-        component={CartScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Feather name="shopping-cart" size={size} color={color} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
-  </PaperProvider>
-
-
-
+     <Provider store={store}>
+      <PaperProvider>
+        <Tab.Navigator
+          screenOptions={{
+            tabBarActiveTintColor: '#DC2626',
+            tabBarInactiveTintColor: 'gray',
+            headerShown: false,
+          }}
+        >
+          {/* <Tab.Screen 
+            name="Settings" 
+            component={SettingsScreen}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Feather name="settings" size={size} color={color} />
+              ),
+            }}
+          /> */}
+          <Tab.Screen 
+            name="Каталог" 
+            component={HomeScreen} 
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Feather name="home" size={size} color={color} />
+              ),
+            }}
+          />
+          <Tab.Screen 
+            name="Мои заказы" 
+            component={OrdersScreen}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Feather name="clock" size={size} color={color} />
+              ),
+            }}
+          />
+          <Tab.Screen 
+            name="Избранное" 
+            component={FavoritesScreen}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Feather name="heart" size={size} color={color} />
+              ),
+            }}
+          />
+          <Tab.Screen 
+            name="Профиль" 
+            component={ProfileScreen}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Feather name="user" size={size} color={color} />
+              ),
+            }}
+          />
+          <Tab.Screen 
+            name="Корзина" 
+            component={CartScreen}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Feather name="shopping-cart" size={size} color={color} />
+              ),
+            }}
+          />
+        </Tab.Navigator>
+    </PaperProvider>
+   </Provider>
 
   );
-
-
 }
-
-
-
 
 // const styles = StyleSheet.create({
 //   container: {
