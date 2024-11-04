@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProductsAction } from "../store/slices/productSlice";
 
 const InnerCategoryCard = ({ title, onPress }) => (
   <TouchableOpacity style={styles.categoryCard} onPress={onPress}>
@@ -11,38 +13,44 @@ export default function CategoryScreen({ route, navigation }) {
   const { category } = route.params;
   const [searchTerm, setSearchTerm] = useState('');
 
-  const productListCategories = [
-    { id: '1', name: ' Категория 1' },
-    { id: '2', name: 'Категория 2'},
-    { id: '3', name: 'Категория 3'},
-    { id: '4', name: 'Категория 4'},
-    { id: '5', name: 'Категория 5'},
-    { id: '6', name: 'Категория 6'},
-    { id: '7', name: 'Категория 7'},
-    { id: '8', name: 'Категория 8'},
-    { id: '9', name: 'Категория 9'},
-  ];
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllProductsAction());
+  }, [dispatch]);
 
+  const productsFromSlice = useSelector((state) => state.product.allProducts);
+
+  // Extract unique product types using a Set
+  const uniqueProducts = Array.from(
+    new Map(productsFromSlice.map((item) => [item.type, item])).values()
+  );
+
+  // Filter unique products based on searchTerm
+  const filteredProducts = uniqueProducts.filter((item) =>
+    item.type.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{category}</Text>
+      
       <TextInput
         style={styles.searchInput}
         placeholder="Поиск..."
         value={searchTerm}
-        onChangeText={setSearchTerm}
+        onChangeText={setSearchTerm} // Update the search term here
       />
+
       <ScrollView>
         <Text>Additional categories or search results will be displayed here.</Text>
       </ScrollView>
       <ScrollView contentContainerStyle={styles.categoriesContainer}>
         <View style={styles.row}>
-          {productListCategories.map((item) => (
+          {filteredProducts.map((item) => (
             <InnerCategoryCard
               key={item.id}
-              title={item.name}
+              title={item.type}
               onPress={() =>
-                navigation.navigate('ProductList', { category: item.name })
+                navigation.navigate('ProductList', { category: item.type })
               }
             />
           ))}

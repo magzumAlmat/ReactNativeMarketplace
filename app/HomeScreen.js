@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, ScrollView, SafeAreaView, StyleSheet, Text ,TouchableOpacity} from 'react-native';
+import {FlatList, Image,View, ScrollView, SafeAreaView, StyleSheet, Text ,TouchableOpacity} from 'react-native';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { Provider } from 'react-redux';
 import { store } from '../store';
-
+import { useRef,useEffect } from 'react';
 const categories = [
   { id: '1', name: 'Бакалея' },
   { id: '2', name: 'Напитки' },
@@ -15,7 +15,9 @@ const categories = [
   { id: '7', name: 'Домашние товары' },
   { id: '8', name: 'Алкоголь' },
   { id: '9', name: 'Товары для животных' },
+  { id: '10', name: 'Еще ченить' },
 ];
+
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -39,15 +41,45 @@ const CategoryCard = ({ title, onPress }) => (
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
+  const flatListRef = useRef();
+  let index = 0;
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      index = (index + 1) % images.length;
+      flatListRef.current.scrollToIndex({ animated: true, index });
+    }, 3000); // Slide every 2 seconds
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, []);
+
+
+const images = [
+  { id: '1', url: 'https://via.placeholder.com/400x200?text=Image+1' },
+  { id: '2', url: 'https://via.placeholder.com/400x200?text=Image+2' },
+  { id: '3', url: 'https://via.placeholder.com/400x200?text=Image+3' },
+  { id: '4', url: 'https://via.placeholder.com/400x200?text=Image+4' },
+  { id: '5', url: 'https://via.placeholder.com/400x200?text=Image+5' },
+];
   return (
     <Provider store={store}>
       <SafeAreaView style={styles.container}>
+       
+        <ScrollView contentContainerStyle={styles.categoriesContainer}>
         <Header />
         <View style={styles.banner}>
-          <Text style={styles.bannerText}>Your Banner Here</Text>
+        <FlatList
+        ref={flatListRef}
+        data={images}
+        keyExtractor={(item) => item.id}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <Image source={{ uri: item.url }} style={styles.image} />
+        )}
+      />
+        
         </View>
-        <ScrollView contentContainerStyle={styles.categoriesContainer}>
           <View style={styles.row}>
             {categories.map((category) => (
               <CategoryCard
@@ -67,6 +99,8 @@ export default function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16 },
+  // container: { flex: 1, backgroundColor: '#fff', padding: 16 },
+  image: { width: 400 , height: 200, marginRight: 16, borderRadius: 8 },
   headerContainer: {
     padding: 16,
     backgroundColor: '#f8f8f8',

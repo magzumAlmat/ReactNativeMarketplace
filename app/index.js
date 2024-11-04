@@ -14,6 +14,10 @@ import HomeScreen from "./HomeScreen";
 import CategoryScreen from './CategoryScreen';
 import ProductListScreen from './ProductListScreen';
 import ProductScreen from './ProductScreen';
+import ProductDetailsScreen from './ProductDetailsScreen';
+import CartScreen from './CartScreen';
+import CheckoutScreen from './CheckoutScreen';
+import PaymentScreen from './PaymentScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -35,11 +39,7 @@ const ProfileScreen = () => (
   </View>
 );
 
-const CartScreen = () => (
-  <View style={styles.centerScreen}>
-    <Text>Корзина</Text>
-  </View>
-);
+
 
 function SettingsScreen() {
   return (
@@ -57,6 +57,10 @@ function HomeStack() {
       <Stack.Screen name="Category" component={CategoryScreen} />
       <Stack.Screen name="ProductList" component={ProductListScreen} />
       <Stack.Screen name="ProductScreen" component={ProductScreen} />
+      <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
+      <Stack.Screen name="Cart" component={CartScreen} />
+      <Stack.Screen name="Checkout" component={CheckoutScreen} /> 
+      <Stack.Screen name="Payment" component={PaymentScreen} /> 
     </Stack.Navigator>
   );
 }

@@ -1,50 +1,107 @@
-// ProductScreen.js
-import React from 'react';
-import { View, Text, StyleSheet ,ScrollView,TouchableOpacity,SafeAreaView} from 'react-native';
+import React, { useEffect } from 'react';
+import { Image, View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllProductsAction } from "../store/slices/productSlice";
+import { useNavigation } from '@react-navigation/native';
 
-const InnerProductCard = ({ title, onPress }) => (
-    <TouchableOpacity style={styles.categoryCard} onPress={onPress}>
-      <Text style={styles.categoryTitle}>{title}</Text>
+
+
+const openDetailsScreen=() =>{
+  return(
+  <View style={styles.container}>
+  <Text style={styles.title}>Продукты в категории: {category}</Text>
+  </View>
+  )
+}
+const ProductCard = ({ title, image, price, product, onPress }) => {
+  const navigation = useNavigation();
+
+  return (
+    <TouchableOpacity
+      style={styles.productCard}
+      onPress={() => navigation.navigate('ProductDetails', { productId: product.id })}
+    >
+      <Image source={'/Users/billionare/Documents/DEVELOPMENT/REACT/ReactNativeMarketplace/MarketplaceBackend/public/cable/public/cable/_1730714278036.jpeg '}/>
+      {/* /Users/billionare/Documents/DEVELOPMENT/REACT/ReactNativeMarketplace/MarketplaceBackend/public/cable/public/cable/_1730714278036.jpeg */}
+      <Image source={{ uri: '/Users/billionare/Documents/DEVELOPMENT/REACT/ReactNativeMarketplace/MarketplaceBackend/public/cable/'+image }} style={styles.productImage} />
+      <Text style={styles.productTitle}>{title}</Text>
+      <Text style={styles.productPrice}>{price} ₸</Text>
     </TouchableOpacity>
   );
+};
 
 
-  const ProductCard = ({ title, onPress }) => (
-    <TouchableOpacity style={styles.categoryCard} onPress={onPress}>
-      <Text style={styles.categoryTitle}>{title}</Text>
-    </TouchableOpacity>
-  );
+
+
+// export default function ProductScreen({ route }) {
+//   const navigation = useNavigation();
+//   const { category } = route.params;
+
+//   const dispatch = useDispatch();
+//   useEffect(() => {
+//     dispatch(getAllProductsAction());
+//   }, [dispatch]);
+
+//   const productsFromSlice = useSelector((state) => state.product.allProducts);
+
+//   const selectedProducts = productsFromSlice.filter(
+//     (product) => product.mainType === category
+//   );
+
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.title}>Продукты в категории: {category}</Text>
+//       <SafeAreaView style={styles.container}>
+//         <ScrollView contentContainerStyle={styles.productsContainer}>
+//           <View style={styles.row}>
+//             {selectedProducts.map((product) => (
+//               <ProductCard
+//                 key={product.id}
+//                 title={product.name}
+//                 image={product.image}
+//                 price={product.price}
+//                 // onPress={() => navigation.navigate('ProductDetailsScreen', { product: product })}
+//                 onPress={()=>openDetailsScreen()}
+//               />
+//             ))}
+//           </View>
+//         </ScrollView>
+//       </SafeAreaView>
+//     </View>
+//   );
+// }
+
 export default function ProductScreen({ route }) {
-  const { subcategory } = route.params;
-  const products = [
-    { id: '1', name: 'Продукт 1' },
-    { id: '2', name: 'Продукт 2'},
-    { id: '3', name: 'Продукт 3'},
-    { id: '4', name: 'Продукт 4'},
-    { id: '5', name: 'Продукт 5'},
-    { id: '6', name: 'Продукт 6'},
-    { id: '7', name: 'Продукт 7'},
-    { id: '8', name: 'Продукт 8'},
-    { id: '9', name: 'Продукт 9'},
-  ];
+  const { category } = route.params;
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    dispatch(getAllProductsAction());
+  }, [dispatch]);
+
+  const productsFromSlice = useSelector((state) => state.product.allProducts);
+  const selectedProducts = productsFromSlice.filter(
+    (product) => product.mainType === category
+  );
+
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Продукты в категории: {subcategory}</Text>
+      
+      <Text style={styles.title}>Продукты в категории: {category}</Text>
       <SafeAreaView style={styles.container}>
-     
-        <View style={styles.banner}>
-          <Text style={styles.bannerText}>Your Banner Here</Text>
-        </View>
-        <ScrollView contentContainerStyle={styles.categoriesContainer}>
+        <ScrollView contentContainerStyle={styles.productsContainer}>
           <View style={styles.row}>
-            {products.map((product) => (
+            {selectedProducts.map((product) => (
+
+              console.log('this is product from ProductScreen= ',product),
               <ProductCard
                 key={product.id}
                 title={product.name}
-                onPress={() =>
-                  navigation.navigate('Category', { category: cproductname })
-                }
+                // image={image}
+                price={product.price}
+                product={product} // Pass the entire product
               />
             ))}
           </View>
@@ -54,31 +111,20 @@ export default function ProductScreen({ route }) {
   );
 }
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16 },
-    headerContainer: {
-      padding: 16,
-      backgroundColor: '#f8f8f8',
-      borderBottomWidth: 1,
-      borderBottomColor: '#ccc',
-    },
-    banner: {
-      height: 200,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#eaeaea',
-      marginBottom: 16,
-    },
-    categoriesContainer: { paddingVertical: 10 },
-    row: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' },
-    categoryCard: {
-      width: '47%',
-      backgroundColor: '#fff',
-      padding: 30,
-      marginVertical: 7,
-      borderRadius: 10,
-      elevation: 5,
-      alignItems: 'center',
-    },
-    categoryTitle: { fontSize: 16, fontWeight: 'bold' },
-  });
-  
+  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  title: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
+  productsContainer: { paddingVertical: 10 },
+  row: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  productCard: {
+    width: '47%',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 15,
+    alignItems: 'center',
+    elevation: 2,
+  },
+  productImage: { width: 100, height: 100, marginBottom: 10, borderRadius: 8 },
+  productTitle: { fontSize: 14, fontWeight: 'bold', textAlign: 'center', marginBottom: 5 },
+  productPrice: { fontSize: 16, color: '#ff5252', fontWeight: 'bold' },
+});

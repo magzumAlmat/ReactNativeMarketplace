@@ -28,8 +28,10 @@ const host = 'http://localhost:8000/';
 export const userPostsSlice = createSlice({
   name: "usercart",
   initialState,
-
+  items: [],
   reducers: {
+
+
     addClickCountReducer: (state, action) => {
       state.clickCount = state.clickCount + 1;
     },
@@ -42,12 +44,10 @@ export const userPostsSlice = createSlice({
     },
     incrementReducer: (state, action) => {
       const { id, updatedData } = action.payload;
-      const existingIds = state.userCart.map((cartItem) => cartItem.id);
-
-      if (existingIds.includes(id)) {
-        state.userCart = [...updatedData];
+      const index = state.userCart.findIndex(item => item.id === id);
+      if (index !== -1) {
+        state.userCart[index] = updatedData;
       }
- 
     },
     decrementReducer: (state, action) => {
       const { id, updatedData } = action.payload;
@@ -67,6 +67,7 @@ export const userPostsSlice = createSlice({
     //   // Добавьте только новые посты в state.allPosts
     //   state.allOrders.push(...newOrders);
     // },
+
     getAllProductsReducer: (state, action) => {
       const existingProducts = state.allProducts.map((product) => product.id);
       // Фильтруйте новые посты, чтобы исключить дубликаты
@@ -80,6 +81,7 @@ export const userPostsSlice = createSlice({
     // filterAllProductsReducer: (state, action) => {
     //   state.allProducts = action.payload;
     // },
+
     getOrderReducer: (state, action) => {
       state.order = action.payload;
       console.log(state.order);
@@ -146,6 +148,21 @@ export const userPostsSlice = createSlice({
     clearCartAction: (state) => {
       state.userCart = [];
     },
+
+    setProducts: (state, action) => {
+      state.allProducts = action.payload; // Set the products
+    },
+    decreaseProductQuantity: (state, action) => {
+      const product = state.allProducts.find(item => item.id === action.payload);
+      if (product) {
+        product.quantity = product.quantity + 1; // Increment quantity back in catalog
+      }
+    },
+  },
+ 
+});
+
+
     // updatePostLikes: (state, action) => {
     //     // Update the likes count for a specific post
     //     const { postId, likesCount } = action.payload;
@@ -242,16 +259,15 @@ export const userPostsSlice = createSlice({
     //     console.log('unfollow start',action.payload)
     //     state.followedUsers = action.payload;
     //   },
-  },
-});
 
-// export const {
+
+export const {
 //   addDataToUserCartReducer,
 //   incrementReducer,
 //   decrementReducer,
 //   getAllOrdersReducer,
 //   clearCartAction,
-//   getAllProductsReducer,
+ 
 //   isAuthReducer,
 //   getOrderReducer,
 //   editOrderReducer,
@@ -259,13 +275,13 @@ export const userPostsSlice = createSlice({
 //   deleteProductReducer,
 //   filterAllProductsReducer,
 //   setSelectedMainTypeReducer,
-//   setSelectedTypeReducer,
+  setSelectedTypeReducer,
 //   addClickCountReducer,
 //   deleteClickCountReducer,
 //   getProductByIdReducer,
 //   createProductReducer,
 //   deleteOrderReducer,
-// } = userPostsSlice.actions;
+getAllProductsReducer,setProducts, decreaseProductQuantity} = userPostsSlice.actions;
 
 // export const addToCartProductAction = (item) => async (dispatch) => {
 //   console.log("Action запустился");
@@ -324,6 +340,21 @@ export const userPostsSlice = createSlice({
 //     throw error;
 //   }
 // };
+
+export const createProductAction = (data) => async (dispatch) => {
+  try {
+    const response = await axios.post(`${host}api/store/createproduct`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    dispatch(createProductReducer(response.data));
+  } catch (error) {
+    console.error("Error creating product: ", error);
+    // Optionally, dispatch an error action here
+  }
+};
+
 
 // export const createProductAction = (data) => async (dispatch) => {
 //   for (const value of data.values()) {
@@ -429,15 +460,15 @@ export const userPostsSlice = createSlice({
 //   }
 // };
 
-// export const getAllProductsAction = () => async (dispatch) => {
-//   try {
-//     const response = await axios.get(`${host}api/store/allproducts`);
+export const getAllProductsAction = () => async (dispatch) => {
+  try {
+    const response = await axios.get(`${host}api/store/allproducts`);
 
-//     dispatch(getAllProductsReducer(response.data));
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+    dispatch(getAllProductsReducer(response.data));
+  } catch (error) {
+    throw error;
+  }
+}
 
 // export const getProductByIdAction = (id) => async (dispatch) => {
 //   console.log("ID from slice",id);
@@ -629,3 +660,6 @@ export const userPostsSlice = createSlice({
 
 
 export default userPostsSlice.reducer;
+
+
+// productSlice.js
