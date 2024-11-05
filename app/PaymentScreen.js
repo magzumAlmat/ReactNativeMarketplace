@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { saveOrderDetails } from '../store/slices/orderSlice'; // Adjust the import path
-
+import { createOrderAction } from '../store/slices/orderSlice';
+import { useSelector } from 'react-redux';
 const fakePaymentProcessing = async (cardNumber, expiration, cvv) => {
   // Simulate a payment processing delay
   return new Promise((resolve) => {
@@ -14,7 +15,10 @@ const fakePaymentProcessing = async (cardNumber, expiration, cvv) => {
   });
 };
 
-const PaymentScreen = ({ navigation }) => {
+const PaymentScreen = ({ navigation ,route}) => {
+  const { orderData } = route.params; // Destructure orderData from route params
+  const cartItems = useSelector((state) => state.cart.items); // Get cart items from Redux store
+  console.log('orderDataFROM payment Screen- ', orderData)
   const [cardNumber, setCardNumber] = useState('');
   const [expiration, setExpiration] = useState('');
   const [cvv, setCvv] = useState('');
@@ -32,6 +36,13 @@ const PaymentScreen = ({ navigation }) => {
     if (paymentSuccess) {
       // If payment is successful, save order details
       dispatch(saveOrderDetails({ cardNumber, expiration, cvv }));
+      
+    
+      dispatch(createOrderAction({ 
+        orderData 
+      
+      }));
+      // dispatch(createOrderAction({ cardNumber, expiration, cvv }))
       Alert.alert('Success', 'Payment successful! Your order is confirmed.');
     } else {
       Alert.alert('Error', 'Payment failed. Please try again.');

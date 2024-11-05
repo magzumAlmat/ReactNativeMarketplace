@@ -29,6 +29,11 @@ export default function CategoryScreen({ route, navigation }) {
   const filteredProducts = uniqueProducts.filter((item) =>
     item.type.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const selectedProducts = filteredProducts.filter(
+    (product) => product.typeOfGood === category
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{category}</Text>
@@ -45,7 +50,7 @@ export default function CategoryScreen({ route, navigation }) {
       </ScrollView>
       <ScrollView contentContainerStyle={styles.categoriesContainer}>
         <View style={styles.row}>
-          {filteredProducts.map((item) => (
+          {selectedProducts.map((item) => (
             <InnerCategoryCard
               key={item.id}
               title={item.type}

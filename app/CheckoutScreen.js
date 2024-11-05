@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, FlatList } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveOrderDetails } from '../store/slices/orderSlice'; // Adjust the import path
+import { createOrderAction } from '../store/slices/orderSlice';
 
 const CheckoutScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -10,14 +11,34 @@ const CheckoutScreen = ({ navigation }) => {
   const [address, setAddress] = useState('');
   const [time, setTime] = useState('');
   const [additionalNotes, setAdditionalNotes] = useState('');
-
+  const userCartIds = []
   // Calculate total price
   const totalAmount = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   const handleCheckout = () => {
-    // Dispatch action to save order details
-    dispatch(saveOrderDetails({ address, time, additionalNotes, cartItems, totalAmount }));
-    navigation.navigate('Payment'); // Navigate to Payment Screen after saving order
+    cartItems.map(item => {
+      const temp = []
+      temp.push(item.id, item.count)
+      userCartIds.push(temp)
+  })
+    // Dispatch action to save order details and create an order
+    // dispatch(createOrderAction({ 
+    //   address, 
+    //   time, 
+    //   additionalNotes, 
+    //   cartItems, 
+    //   totalAmount 
+    // }));
+    
+    const orderData = {
+      address, 
+      time, 
+      additionalNotes, 
+      cartItems, 
+      totalAmount 
+     
+    };
+    navigation.navigate('Payment', { orderData}); // Navigate to Payment Screen after saving order
   };
 
   const renderCartItem = ({ item }) => (

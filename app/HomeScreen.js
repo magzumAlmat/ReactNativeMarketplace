@@ -19,6 +19,9 @@ const categories = [
 ];
 
 
+
+
+
 const Header = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
   return (
@@ -41,14 +44,17 @@ const CategoryCard = ({ title, onPress }) => (
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
+
+
   const flatListRef = useRef();
   let index = 0;
+
 
   useEffect(() => {
     const interval = setInterval(() => {
       index = (index + 1) % images.length;
       flatListRef.current.scrollToIndex({ animated: true, index });
-    }, 3000); // Slide every 2 seconds
+    }, 3000); // Slide every  seconds
 
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
@@ -61,6 +67,7 @@ const images = [
   { id: '4', url: 'https://via.placeholder.com/400x200?text=Image+4' },
   { id: '5', url: 'https://via.placeholder.com/400x200?text=Image+5' },
 ];
+
   return (
     <Provider store={store}>
       <SafeAreaView style={styles.container}>
