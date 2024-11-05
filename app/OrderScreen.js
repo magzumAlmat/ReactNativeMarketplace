@@ -16,7 +16,7 @@ const OrdersScreen = () => {
 
   // Handle updating the order
   const handleUpdateOrder = (orderId) => {
-    if (Object.keys(editedOrder).length > 0) {
+    if (editedOrder.address || editedOrder.phone) {
       dispatch(updateOrderAction(orderId, editedOrder));
       setEditingOrderId(null); // Reset editing state
       setEditedOrder({}); // Clear the edited order
@@ -38,10 +38,10 @@ const OrdersScreen = () => {
   // Set editing fields when editing an order
   const handleEditOrder = (order) => {
     setEditingOrderId(order.id);
-    setEditedOrder({ ...order }); // Initialize edited order with current values
+    setEditedOrder({ address: order.address, phone: order.phone }); // Initialize edited order with address and phone
   };
 
-  // Handle change in any field of the order
+  // Handle change in address or phone field
   const handleInputChange = (field, value) => {
     setEditedOrder((prevOrder) => ({ ...prevOrder, [field]: value }));
   };
@@ -59,24 +59,18 @@ const OrdersScreen = () => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Новый статус"
-            value={editedOrder.status}
-            onChangeText={(value) => handleInputChange('status', value)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Примечания"
-            value={editedOrder.additionalNotes}
-            onChangeText={(value) => handleInputChange('additionalNotes', value)}
+            placeholder="Новый телефон"
+            value={editedOrder.phone}
+            onChangeText={(value) => handleInputChange('phone', value)}
           />
           <Button title="Сохранить" onPress={() => handleUpdateOrder(item.id)} />
         </>
       ) : (
         <>
-          <Text style={styles.orderText}>Заказ ID: {item.id}</Text>
+          {/* <Text style={styles.orderText}>Заказ ID: {item.id}</Text> */}
           <Text style={styles.orderText}>Адрес: {item.address}</Text>
+          <Text style={styles.orderText}>Телефон: {item.phone}</Text>
           <Text style={styles.orderText}>Статус: {item.status}</Text>
-          <Text style={styles.orderText}>Примечания: {item.additionalNotes}</Text>
           <View style={styles.buttonContainer}>
             <Button title="Редактировать" onPress={() => handleEditOrder(item)} />
             <Button title="Удалить" color="red" onPress={() => handleDeleteOrder(item.id)} />

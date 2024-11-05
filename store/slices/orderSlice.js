@@ -123,7 +123,7 @@ export const fetchOrdersAction = () => async (dispatch) => {
 // Action to update an order
 export const updateOrderAction = (orderId, updatedOrder) => async (dispatch) => {
   try {
-    const response = await axios.put(`${host}api/store/orders/${orderId}`, updatedOrder); // Replace with your API endpoint
+    const response = await axios.post(`${host}api/store/order/${orderId}/editorder`, updatedOrder); // Replace with your API endpoint
     dispatch(updateOrder({ orderId, updatedOrder: response.data }));
   } catch (error) {
     console.error('Error updating order:', error);
