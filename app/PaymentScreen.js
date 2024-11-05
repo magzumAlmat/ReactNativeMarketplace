@@ -33,12 +33,12 @@ const PaymentScreen = ({ navigation }) => {
       // If payment is successful, save order details
       dispatch(saveOrderDetails({ cardNumber, expiration, cvv }));
       Alert.alert('Success', 'Payment successful! Your order is confirmed.');
-      // Navigate to another screen if needed
-      navigation.navigate('DeliveryMap'); // Example: Navigate to Delivery Map
     } else {
       Alert.alert('Error', 'Payment failed. Please try again.');
     }
+
   };
+
 
   return (
     <View style={styles.container}>

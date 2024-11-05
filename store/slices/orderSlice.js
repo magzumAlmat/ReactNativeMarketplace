@@ -11,6 +11,7 @@ const orderSlice = createSlice({
   reducers: {
     saveOrderDetails: (state, action) => {
       state.orderDetails = action.payload; 
+      console.log('Детали заказа- ',state.orderDetails)
     },
   },
 });
