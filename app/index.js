@@ -18,14 +18,15 @@ import ProductDetailsScreen from './ProductDetailsScreen';
 import CartScreen from './CartScreen';
 import CheckoutScreen from './CheckoutScreen';
 import PaymentScreen from './PaymentScreen';
+import OrdersScreen from './OrderScreen'
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const OrdersScreen = () => (
-  <View style={styles.centerScreen}>
-    <Text>Мои заказы</Text>
-  </View>
-);
+// const OrdersScreen = () => (
+//   <View style={styles.centerScreen}>
+   
+//   </View>
+// );
 
 const FavoritesScreen = () => (
   <View style={styles.centerScreen}>
@@ -53,7 +54,7 @@ function SettingsScreen() {
 function HomeStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Главная" component={HomeScreen} />
       <Stack.Screen name="Category" component={CategoryScreen} />
       <Stack.Screen name="ProductList" component={ProductListScreen} />
       <Stack.Screen name="ProductScreen" component={ProductScreen} />
@@ -61,6 +62,7 @@ function HomeStack() {
       <Stack.Screen name="Cart" component={CartScreen} />
       <Stack.Screen name="Checkout" component={CheckoutScreen} /> 
       <Stack.Screen name="Payment" component={PaymentScreen} /> 
+      <Stack.Screen name="My Orders" component={OrdersScreen} />
     </Stack.Navigator>
   );
 }
@@ -117,6 +119,7 @@ export default function Page() {
               ),
             }}
           />
+
           <Tab.Screen 
             name="Избранное" 
             component={FavoritesScreen}
