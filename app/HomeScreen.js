@@ -4,7 +4,12 @@ import {FlatList, Image,View, ScrollView, SafeAreaView, StyleSheet, Text ,Toucha
 import { useSelector, useDispatch } from 'react-redux';
 import { Provider } from 'react-redux';
 import { store } from '../store';
-import { useRef,useEffect } from 'react';
+import { useRef} from 'react';
+
+import{getAllProductsAction,
+  getAllProductsReducer,
+  } from "../store/slices/productSlice";
+  import { useEffect } from 'react';
 const categories = [
   { id: '1', name: 'Бакалея' },
   { id: '2', name: 'Напитки' },
@@ -44,8 +49,19 @@ const CategoryCard = ({ title, onPress }) => (
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
+  
+  useEffect(() => {
+    dispatch(getAllProductsAction());
+  }, [productsFromSlice]);
+  const productsFromSlice = useSelector((state) => state.product.allProducts);
+
+  // Ensure unique mainTypes using a Map
+  const uniqueProducts = Array.from(
+    new Map(productsFromSlice.map((item) => [item.typeOfGood, item])).values()
+  );
 
 
+ 
   const flatListRef = useRef();
   let index = 0;
 
@@ -87,17 +103,16 @@ const images = [
       />
         
         </View>
-          <View style={styles.row}>
-            {categories.map((category) => (
-              <CategoryCard
-                key={category.id}
-                title={category.name}
-                onPress={() =>
-                  navigation.navigate('Category', { category: category.name })
-                }
-              />
-            ))}
-          </View>
+        <View style={styles.row}>
+          {uniqueProducts.map((item) => (
+            <CategoryCard
+              key={item.id} // Add a unique key for each item
+              title={item.typeOfGood} // Choose the appropriate property
+              onPress={() => navigation.navigate('Category', { category: item.typeOfGood })}
+            />
+          ))}
+        </View>
+
         </ScrollView>
       </SafeAreaView>
     </Provider>

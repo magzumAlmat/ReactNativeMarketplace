@@ -1,27 +1,61 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, FlatList, TextInput, Alert } from 'react-native';
+import { View, Text, Button, StyleSheet, FlatList, TextInput, Alert ,ScrollView, RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrdersAction, updateOrderAction, deleteOrderAction } from '../store/slices/orderSlice'; // Adjust the import path
 
 const OrdersScreen = () => {
+    const [refreshKey, setRefreshKey] = useState(0);
+
+// Call this function to trigger a re-render
+const triggerRerender = () => {
+  setRefreshKey((prevKey) => prevKey + 1);
+};
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = () => {
+    setRefreshing(true);
+    dispatch(fetchOrdersAction()).finally(() => setRefreshing(false));
+    };
+
   const dispatch = useDispatch();
   const { orders, loading, error } = useSelector((state) => state.order);
   const [editingOrderId, setEditingOrderId] = useState(null);
   const [editedOrder, setEditedOrder] = useState({});
 
+
   // Fetch orders when the component mounts
   useEffect(() => {
     dispatch(fetchOrdersAction());
+    
   }, [dispatch]);
 
   // Handle updating the order
   const handleUpdateOrder = (orderId) => {
+    console.log('сработал handleUpdateOrder')
     if (editedOrder.address || editedOrder.phone) {
       dispatch(updateOrderAction(orderId, editedOrder));
       setEditingOrderId(null); // Reset editing state
       setEditedOrder({}); // Clear the edited order
+    
     }
   };
+
+// const handleUpdateOrder = (orderId) => {
+//     console.log('handleUpdateOrder started')
+//     if (editedOrder.address || editedOrder.phone) {
+//       dispatch(updateOrderAction(orderId, editedOrder))
+//         .then(() => {
+//           // Re-fetch orders to update the UI
+//           dispatch(fetchOrdersAction());
+//           setEditingOrderId(null); // Reset editing state
+//           setEditedOrder({}); // Clear the edited order
+//         })
+//         .catch((error) => {
+//           Alert.alert('Ошибка', 'Не удалось обновить заказ. Пожалуйста, попробуйте снова.');
+//           console.error('Update failed:', error);
+//         });
+//     }
+//   };
 
   // Handle deleting an order
   const handleDeleteOrder = (orderId) => {
@@ -48,7 +82,10 @@ const OrdersScreen = () => {
 
   // Render each order item
   const renderOrderItem = ({ item }) => (
+    console.log('item from my orders= ',item),
+    
     <View style={styles.orderItem}>
+        
       {editingOrderId === item.id ? (
         <>
           <TextInput
@@ -67,6 +104,7 @@ const OrdersScreen = () => {
         </>
       ) : (
         <>
+   
           {/* <Text style={styles.orderText}>Заказ ID: {item.id}</Text> */}
           <Text style={styles.orderText}>Адрес: {item.address}</Text>
           <Text style={styles.orderText}>Телефон: {item.phone}</Text>
@@ -75,14 +113,17 @@ const OrdersScreen = () => {
             <Button title="Редактировать" onPress={() => handleEditOrder(item)} />
             <Button title="Удалить" color="red" onPress={() => handleDeleteOrder(item.id)} />
           </View>
+        
         </>
       )}
     </View>
+     
   );
 
   // Render the main component
   return (
     <View style={styles.container}>
+   
       <Text style={styles.title}>Мои заказы</Text>
       {loading ? (
         <Text>Загрузка...</Text>
@@ -90,12 +131,19 @@ const OrdersScreen = () => {
         <Text style={styles.errorText}>{error}</Text>
       ) : (
         <FlatList
-          data={orders}
-          renderItem={renderOrderItem}
-          keyExtractor={(item) => item.id.toString()}
-        />
+        data={orders}
+        renderItem={renderOrderItem}
+        keyExtractor={(item) => item.id.toString()}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      />
+       
       )}
+      
+      
     </View>
+   
   );
 };
 

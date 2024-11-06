@@ -5,6 +5,8 @@ import { useDispatch } from 'react-redux';
 import { saveOrderDetails } from '../store/slices/orderSlice'; // Adjust the import path
 import { createOrderAction } from '../store/slices/orderSlice';
 import { useSelector } from 'react-redux';
+import { clearCart } from '../store/slices/cartSlice';
+import { removeAllItemsFromCart } from '../store/slices/cartSlice';
 const fakePaymentProcessing = async (cardNumber, expiration, cvv) => {
   // Simulate a payment processing delay
   return new Promise((resolve) => {
@@ -44,6 +46,14 @@ const PaymentScreen = ({ navigation ,route}) => {
       }));
       // dispatch(createOrderAction({ cardNumber, expiration, cvv }))
       Alert.alert('Success', 'Payment successful! Your order is confirmed.');
+
+
+      clearCart()
+      
+      dispatch(removeAllItemsFromCart());
+
+      navigation.navigate('Мои заказы');
+
     } else {
       Alert.alert('Error', 'Payment failed. Please try again.');
     }

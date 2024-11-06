@@ -33,12 +33,14 @@ const orderSlice = createSlice({
       state.orders = action.payload;
     },
     updateOrder: (state, action) => {
+      console.log('updateOrderReducer started',action.payload)
       const { orderId, updatedOrder } = action.payload;
       const index = state.orders.findIndex((order) => order.id === orderId);
       if (index !== -1) {
         state.orders[index] = { ...state.orders[index], ...updatedOrder };
       }
     },
+
     deleteOrder: (state, action) => {
       const orderId = action.payload;
       state.orders = state.orders.filter((order) => order.id !== orderId);
@@ -108,6 +110,7 @@ export const createOrderAction = ({orderData}) => async (dispatch) => {
 
 // Action to fetch orders
 export const fetchOrdersAction = () => async (dispatch) => {
+  console.log('fetchOrdersAction started')
   dispatch(setLoading(true));
   try {
     const response = await axios.get(`${host}api/store/allorders`); // Replace with your API endpoint
@@ -122,6 +125,7 @@ export const fetchOrdersAction = () => async (dispatch) => {
 
 // Action to update an order
 export const updateOrderAction = (orderId, updatedOrder) => async (dispatch) => {
+  console.log('UpdateOrderAction from order slice started',orderId,updateOrder)
   try {
     const response = await axios.post(`${host}api/store/order/${orderId}/editorder`, updatedOrder); // Replace with your API endpoint
     dispatch(updateOrder({ orderId, updatedOrder: response.data }));
@@ -129,12 +133,14 @@ export const updateOrderAction = (orderId, updatedOrder) => async (dispatch) => 
     console.error('Error updating order:', error);
     dispatch(setError('Error updating order.'));
   }
+  console.log('UpdateOrderAction отработал')
 };
+
 
 // Action to delete an order
 export const deleteOrderAction = (orderId) => async (dispatch) => {
   try {
-    await axios.delete(`${host}api/store/orders/${orderId}`); // Replace with your API endpoint
+    await axios.delete(`${host}api/store/order/${orderId}`); // Replace with your API endpoint
     dispatch(deleteOrder(orderId));
   } catch (error) {
     console.error('Error deleting order:', error);
