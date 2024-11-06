@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import axios from 'axios';
 
-const RegistrationScreen = ({ navigation }) => {
+const RegistrationScreen = ({ navigation ,route}) => {
+  const { orderData } = route.params;
+  console.log('this is orderDataFromProps= ',orderData)
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -35,6 +37,11 @@ const RegistrationScreen = ({ navigation }) => {
       });
   };
 
+
+  const handleContinueWithoutRegistration = () => {
+    navigation.navigate('UserDetails', {orderData});
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Вход</Text>
@@ -49,6 +56,12 @@ const RegistrationScreen = ({ navigation }) => {
           />
           <TouchableOpacity onPress={handleSendOtp} style={styles.button}>
             <Text style={styles.buttonText}>Отправить SMS</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleContinueWithoutRegistration}
+            style={[styles.button, styles.secondaryButton]}
+          >
+            <Text style={styles.buttonText}>Продолжить без регистрации</Text>
           </TouchableOpacity>
         </>
       ) : (

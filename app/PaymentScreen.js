@@ -20,7 +20,7 @@ const fakePaymentProcessing = async (cardNumber, expiration, cvv) => {
 const PaymentScreen = ({ navigation ,route}) => {
   const { orderData } = route.params; // Destructure orderData from route params
   const cartItems = useSelector((state) => state.cart.items); // Get cart items from Redux store
-  console.log('orderDataFROM payment Screen- ', orderData)
+  console.log('1 orderDataFROM payment Screen- ', orderData)
   const [cardNumber, setCardNumber] = useState('');
   const [expiration, setExpiration] = useState('');
   const [cvv, setCvv] = useState('');

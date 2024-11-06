@@ -38,6 +38,7 @@ export default function CategoryScreen({ route, navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>{category}</Text>
       
+      {/* Search Input */}
       <TextInput
         style={styles.searchInput}
         placeholder="Поиск..."
@@ -45,9 +46,11 @@ export default function CategoryScreen({ route, navigation }) {
         onChangeText={setSearchTerm} // Update the search term here
       />
 
-      <ScrollView>
-        <Text>Additional categories or search results will be displayed here.</Text>
-      </ScrollView>
+      {/* <ScrollView>
+        <Text style={styles.infoText}>Additional categories or search results will be displayed here.</Text>
+      </ScrollView> */}
+
+      {/* Categories */}
       <ScrollView contentContainerStyle={styles.categoriesContainer}>
         <View style={styles.row}>
           {selectedProducts.map((item) => (
@@ -66,26 +69,42 @@ export default function CategoryScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
+  container: { flex: 1, padding: 16, backgroundColor: '#f5f5f5' },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, color: '#333' },
   searchInput: {
-    height: 40,
+    height: 45,
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
+    borderRadius: 8,
+    paddingHorizontal: 15,
     marginBottom: 20,
+    backgroundColor: '#fff',
+    fontSize: 16,
   },
-  categoriesContainer: { paddingVertical: 10 },
-  row: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' },
+  infoText: {
+    fontSize: 14,
+    color: '#777',
+    marginBottom: 15,
+  },
+  categoriesContainer: { paddingVertical: 1},
+  row: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   categoryCard: {
     width: '47%',
     backgroundColor: '#fff',
-    padding: 30,
-    marginVertical: 7,
-    borderRadius: 10,
+    paddingVertical: 25,
+    paddingHorizontal: 15,
+    marginVertical: 10,
+    borderRadius: 12,
     elevation: 5,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
-  categoryTitle: { fontSize: 16, fontWeight: 'bold' },
+  categoryTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
 });

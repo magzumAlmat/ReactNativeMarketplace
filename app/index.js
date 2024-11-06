@@ -299,6 +299,8 @@ import PaymentScreen from './PaymentScreen';
 import OrdersScreen from './OrderScreen';
 import FavoritesScreen from './FavoriteScreen';
 import ProfileScreen from './ProfileScreen';
+import UserDetails from './UserDetailsScreen';
+import UserDetailsScreen from './UserDetailsScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -315,6 +317,8 @@ function HomeStack() {
       <Stack.Screen name="Checkout" component={CheckoutScreen} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
       <Stack.Screen name="My Orders" component={OrdersScreen} />
+      <Stack.Screen name="Registration" component={RegistrationScreen} /> 
+      <Stack.Screen name="UserDetails" component={UserDetailsScreen} /> 
     </Stack.Navigator>
   );
 }

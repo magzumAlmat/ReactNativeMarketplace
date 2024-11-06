@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { saveOrderDetails } from '../store/slices/orderSlice'; // Adjust the import path
 import { createOrderAction } from '../store/slices/orderSlice';
 
+let orderIdCounter = 1; // For demonstration, this will be the auto-incrementing ID counter.
+
 const CheckoutScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items); // Get cart items from Redux store
@@ -29,8 +31,10 @@ const CheckoutScreen = ({ navigation }) => {
     //   cartItems, 
     //   totalAmount 
     // }));
-    
+    const orderId = orderIdCounter++;
+
     const orderData = {
+      id: orderId, 
       address, 
       time, 
       additionalNotes, 
@@ -38,13 +42,14 @@ const CheckoutScreen = ({ navigation }) => {
       totalAmount 
      
     };
-    navigation.navigate('Payment', { orderData}); // Navigate to Payment Screen after saving order
+    // navigation.navigate('Payment', { orderData}); 
+    navigation.navigate('Registration', {orderData}); 
   };
 
   const renderCartItem = ({ item }) => (
     <View style={styles.cartItem}>
-      <Text style={styles.itemName}>{item.name} (x{item.quantity})</Text>
-      <Text style={styles.itemPrice}>{item.price} ₸</Text>
+      <Text style={styles.itemName}>{item.name} (x{item.quantity}) </Text>
+      <Text style={styles.itemPrice}>{item.price} ₸   |   {item.quantity*item.price} ₸</Text>
     </View>
   );
 

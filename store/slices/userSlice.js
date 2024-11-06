@@ -2,6 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+  userId:null,
   isAuth: false,
   userInfo: {},
   clickCount: 0,
@@ -24,9 +25,16 @@ const userSlice = createSlice({
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
     },
+    setUserId: (state, action) => {
+      userId=state.id
+      state.id = action.payload;
+      console.log(' output from UserSlice state= ',state.id)
+
+    },
+    
   },
 });
 
-export const { setAuth, incrementClickCount, decrementClickCount, setUserInfo } = userSlice.actions;
+export const { setUserId,setAuth, incrementClickCount, decrementClickCount, setUserInfo } = userSlice.actions;
 
 export default userSlice.reducer;
