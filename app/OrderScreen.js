@@ -96,7 +96,6 @@ const OrdersScreen = () => {
     console.log('item from my orders= ',item),
     
     <View style={styles.orderItem}>
-        
       {editingOrderId === item.id ? (
         <>
           <TextInput
@@ -115,7 +114,6 @@ const OrdersScreen = () => {
         </>
       ) : (
         <>
-   
           {/* <Text style={styles.orderText}>Заказ ID: {item.id}</Text> */}
           <Text style={styles.orderText}>Комментарий курьеру: {item.additionalNotes}</Text>
           <Text style={styles.orderText}>Время доставки: {item.time}</Text>

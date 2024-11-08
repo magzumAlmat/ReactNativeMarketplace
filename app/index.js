@@ -301,7 +301,9 @@ import FavoritesScreen from './FavoriteScreen';
 import ProfileScreen from './ProfileScreen';
 import UserDetails from './UserDetailsScreen';
 import UserDetailsScreen from './UserDetailsScreen';
+import RegistrationScreenFirstScreen from './RegistrationScreenFirstScreen';
 
+import UserDetailsScreenSecondScreen from './UserDetailsScreenSecondScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -319,6 +321,10 @@ function HomeStack() {
       <Stack.Screen name="My Orders" component={OrdersScreen} />
       <Stack.Screen name="Registration" component={RegistrationScreen} /> 
       <Stack.Screen name="UserDetails" component={UserDetailsScreen} /> 
+      <Stack.Screen name="ProfileScreen" component={ProfileScreen} /> 
+      
+      <Stack.Screen name="RegistrationFirstScreen" component={RegistrationScreenFirstScreen} /> 
+      <Stack.Screen name="UserDetailsSecondScreen" component={UserDetailsScreenSecondScreen} /> 
     </Stack.Navigator>
   );
 }
@@ -328,7 +334,7 @@ export default function Page() {
     <Provider store={store}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {/* Registration Screen будет первым */}
-        {/* <Stack.Screen name="Registration" component={RegistrationScreen} /> */}
+        <Stack.Screen name="RegistrationFirstScreen" component={RegistrationScreenFirstScreen} />
         {/* Main приложение, которое будет отображаться после верификации */}
         <Stack.Screen name="Main" component={MainApp} />
       </Stack.Navigator>

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import axios from 'axios';
-
-const RegistrationScreen = ({ navigation ,route}) => {
-  const { orderData } = route.params;
-  console.log('this is orderDataFromProps= ',orderData)
+import UserDetailsScreenSecondScreen from './UserDetailsScreenSecondScreen';
+import UserDetailsScreen from './UserDetailsScreen';
+const RegistrationScreenFirstScreen = ({ navigation }) => {
+  // const { orderData } = route.params;
+  // console.log('this is orderDataFromProps= ',orderData)
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -31,7 +32,7 @@ const RegistrationScreen = ({ navigation ,route}) => {
     //     Alert.alert('Успех', 'Верификация успешна!');
         // Перейти к главному экрану после успешной верификации
         if (otp==1111){
-        navigation.replace('UserDetails');}
+          navigation.replace('UserDetails');}
       // })
       // .catch((error) => {
       //   Alert.alert('Ошибка', 'Неверный код OTP');
@@ -40,7 +41,7 @@ const RegistrationScreen = ({ navigation ,route}) => {
 
 
   const handleContinueWithoutRegistration = () => {
-    navigation.navigate('UserDetails', {orderData});
+    navigation.navigate('Main');
   };
 
   return (
@@ -114,4 +115,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegistrationScreen;
+export default RegistrationScreenFirstScreen;
