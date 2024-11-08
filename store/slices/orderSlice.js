@@ -1,25 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const host = "http://localhost:8000/";
+const host = 'http://localhost:8000/';
 
 const initialState = {
   orderDetails: null,
+  orders: [],
+  loading: false,
+  error: null,
 };
-
-// const orderSlice = createSlice({
-//   name: 'order',
-//   initialState,
-//   reducers: {
-//     saveOrderDetails: (state, action) => {
-//       state.orderDetails = action.payload; 
-//       console.log('Детали заказа- ', state.orderDetails);
-//     },
-//   },
-// });
-
-// Action to create an order
-
 
 const orderSlice = createSlice({
   name: 'order',
@@ -27,23 +16,35 @@ const orderSlice = createSlice({
   reducers: {
     saveOrderDetails: (state, action) => {
       state.orderDetails = action.payload;
-      console.log('Order details:', state.orderDetails);
     },
     setOrders: (state, action) => {
       state.orders = action.payload;
     },
     updateOrder: (state, action) => {
-      console.log('updateOrderReducer started',action.payload)
       const { orderId, updatedOrder } = action.payload;
       const index = state.orders.findIndex((order) => order.id === orderId);
       if (index !== -1) {
         state.orders[index] = { ...state.orders[index], ...updatedOrder };
       }
     },
+    // updateOrder: (state, action) => {
+    //   const { orderId, updatedOrder } = action.payload;
+
+    //   const index = state.orders.findIndex(order => order.id === orderId);
+    //   if (index !== -1) {
+    //     // Using spread operator to create a new array to avoid mutating the state
+    //     state.orders = [
+    //       ...state.orders.slice(0, index),
+    //       { ...state.orders[index], ...updatedOrder },
+    //       ...state.orders.slice(index + 1),
+    //     ];
+        
+    //   }
+    //   console.log('state.orders= ',state.orders)
+    // },
 
     deleteOrder: (state, action) => {
-      const orderId = action.payload;
-      state.orders = state.orders.filter((order) => order.id !== orderId);
+      state.orders = state.orders.filter(order => order.id !== action.payload);
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -54,61 +55,59 @@ const orderSlice = createSlice({
   },
 });
 
-export const createOrderAction = ({orderData}) => async (dispatch) => {
-  dispatch(saveOrderDetails(orderData)); // Save order details first
+// export const fetchOrdersAction = () => async (dispatch, getState) => {
+//   const state = getState();
+//   let userPassID = state.user?.userPassID;
 
-  const { cartItems, address, totalAmount, additionalNotes } = orderData;
-
-  // Transform cartItems to the required format: [[productId1, quantity1], [productId2, quantity2], ...]
-  const product_ids = cartItems.map(item => [item.id, item.quantity]);
-
-  try {
-    const response = await axios.post(`${host}api/store/createorder`, {
-      username: 'Test User', // Replace with actual user data as needed
-      phone: '+7 7777777777', // Replace with actual phone number as needed
-      address: address,
-      status: 'some status', // Replace with appropriate status
-      product_ids: product_ids, // Now it's an array of arrays
-      totalPrice: totalAmount,
-      additionalNotes: additionalNotes,
-    });
-    
-    // Handle successful response here (e.g., navigate, show message)
-    console.log('Order created successfully:', response.data);
-  } catch (error) {
-    // Handle errors
-    console.error('Error creating order:', error);
-    throw error;
-  }
-};
-
-
-// Action to create an order
-// export const createOrderAction = ({ orderData }) => async (dispatch) => {
-//   dispatch(saveOrderDetails(orderData)); // Save order details first
-
-//   const { cartItems, address, totalAmount, additionalNotes } = orderData;
-//   const product_ids = cartItems.map((item) => [item.id, item.quantity]); // Transform cartItems to the required format
+//   if (!userPassID) {
+//     console.warn('UserId is null, using static UserId');
+//     userPassID = 11111; // Replace with your fallback UserId if needed
+//   }
 
 //   try {
-//     const response = await axios.post(`${host}api/store/createorder`, {
-//       username: 'Test User', // Replace with actual user data
-//       phone: '+7 7777777777', // Replace with actual phone number
-//       address: address,
-//       status: 'some status', // Replace with appropriate status
-//       product_ids: product_ids,
-//       totalPrice: totalAmount,
-//       additionalNotes: additionalNotes,
+//     dispatch(setLoading(true));
+
+//     const response = await axios.get(`${host}api/store/orders`, {
+//       params: { UserId: userPassID },
 //     });
 
-//     console.log('Order created successfully:', response.data);
+//     dispatch(setOrders(response.data)); // Populate orders from response
+//     dispatch(setLoading(false));
 //   } catch (error) {
-//     console.error('Error creating order:', error);
-//     throw error;
+//     console.error('Error fetching orders:', error);
+//     dispatch(setError(error.message));
+//     dispatch(setLoading(false));
 //   }
 // };
 
-// Action to fetch orders
+export const updateOrderAction = (orderId, updatedOrder) => async (dispatch) => {
+  console.log('UpdateOrderAction from order slice started', orderId, updatedOrder);
+  try {
+    const response = await axios.put(`${host}api/store/order/${orderId}/editorder`, updatedOrder); // Replace with your API endpoint
+    // Dispatch the updated order to the Redux store
+    // dispatch(updateOrder({ orderId, updatedOrder: response.data }));
+    console.log('Update response data:', response.data);
+    dispatch({ type: 'order/updateOrder', payload: { orderId, updatedOrder: response.data } });
+    
+  } catch (error) {
+    console.error('Error updating order:', error);
+    dispatch(setError('Error updating order.'));
+  }
+
+  // try {
+  //   const response = await axios.put(`${host}api/store/order/${orderId}/editorder`, updatedOrder);
+  //   console.log('Update successful:', response.data);
+  //   dispatch(updateOrder({ orderId, updatedOrder: response.data }));
+  // } catch (error) {
+  //   console.error('Error updating order:', error);
+  //   dispatch(setError('Error updating order.'));
+  //   Alert.alert('Error', 'Failed to update the order.');
+  // }
+  console.log('UpdateOrderAction completed');
+};
+
+
+
 export const fetchOrdersAction = () => async (dispatch) => {
   console.log('fetchOrdersAction started')
   dispatch(setLoading(true));
@@ -123,21 +122,6 @@ export const fetchOrdersAction = () => async (dispatch) => {
   }
 };
 
-// Action to update an order
-export const updateOrderAction = (orderId, updatedOrder) => async (dispatch) => {
-  console.log('UpdateOrderAction from order slice started',orderId,updateOrder)
-  try {
-    const response = await axios.post(`${host}api/store/order/${orderId}/editorder`, updatedOrder); // Replace with your API endpoint
-    dispatch(updateOrder({ orderId, updatedOrder: response.data }));
-  } catch (error) {
-    console.error('Error updating order:', error);
-    dispatch(setError('Error updating order.'));
-  }
-  console.log('UpdateOrderAction отработал')
-};
-
-
-// Action to delete an order
 export const deleteOrderAction = (orderId) => async (dispatch) => {
   try {
     await axios.delete(`${host}api/store/order/${orderId}`); // Replace with your API endpoint
@@ -148,12 +132,39 @@ export const deleteOrderAction = (orderId) => async (dispatch) => {
   }
 };
 
+export const createOrderAction = ({ orderData }) => async (dispatch, getState) => {
+  const state = getState();
+  let userPassID = state.user?.userPassID;
+
+  if (!userPassID) {
+    console.warn('UserId is null, using static UserId');
+    userPassID = 0; // Replace with your fallback UserId if needed
+  }
+
+  try {
+    console.log('ORDER DATA FROM CREATE ORDER= ',orderData.time)
+    const { cartItems,  totalAmount,additionalNotes,address,time} = orderData;
+
+    const product_ids = cartItems.map(item => [item.id, item.quantity]);
+
+    const response = await axios.post(`${host}api/store/createorder`, {
+      UserId: userPassID, // Pass the UserId here
+      product_ids:product_ids,
+      // address:address,
+      status: 'Pending',
+      totalPrice: totalAmount,
+      additionalNotes:additionalNotes,
+      time:time
+      // streetOrHomeNumber:s
+    });
+
+    console.log('Order created successfully:', response.data);
+  } catch (error) {
+    console.error('Error creating order:', error);
+    throw error;
+  }
+};
+
+
 export const { saveOrderDetails, setOrders, updateOrder, deleteOrder, setLoading, setError } = orderSlice.actions;
 export default orderSlice.reducer;
-
-
-
-
-
-// export const { saveOrderDetails } = orderSlice.actions;
-// export default orderSlice.reducer;

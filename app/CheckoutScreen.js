@@ -10,7 +10,7 @@ let orderIdCounter = 1; // For demonstration, this will be the auto-incrementing
 const CheckoutScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items); // Get cart items from Redux store
-  const [address, setAddress] = useState('');
+ 
   const [time, setTime] = useState('');
   const [additionalNotes, setAdditionalNotes] = useState('');
   const userCartIds = []
@@ -35,7 +35,7 @@ const CheckoutScreen = ({ navigation }) => {
 
     const orderData = {
       id: orderId, 
-      address, 
+    
       time, 
       additionalNotes, 
       cartItems, 
@@ -63,25 +63,20 @@ const CheckoutScreen = ({ navigation }) => {
         style={styles.cartList}
       />
       <Text style={styles.total}>Общая сумма: {totalAmount} ₸</Text>
+     
       <TextInput
         style={styles.input}
-        placeholder="Enter your address"
-        value={address}
-        onChangeText={setAddress}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Preferred time (e.g., 2 PM)"
+        placeholder="Предпочитаемое время (например с 12:00 до 22:00)"
         value={time}
         onChangeText={setTime}
       />
       <TextInput
         style={styles.input}
-        placeholder="Additional notes"
+        placeholder="Сообщение курьеру"
         value={additionalNotes}
         onChangeText={setAdditionalNotes}
       />
-      <Button title="Оформить заказ" onPress={handleCheckout} disabled={!address || !time || cartItems.length === 0} />
+      <Button title="Оформить заказ" onPress={handleCheckout}  />
     </View>
   );
 };
@@ -95,12 +90,13 @@ const styles = StyleSheet.create({
   itemPrice: { fontSize: 16, color: '#ff5252' },
   total: { fontSize: 20, fontWeight: 'bold', marginBottom: 20 },
   input: {
-    height: 40,
+    height: 50,
     borderColor: '#ccc',
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 15,
+    fontSize:12
   },
 });
 

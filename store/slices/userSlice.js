@@ -2,6 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+  userPassID:null,
   userId:null,
   isAuth: false,
   userInfo: {},
@@ -26,9 +27,13 @@ const userSlice = createSlice({
       state.userInfo = action.payload;
     },
     setUserId: (state, action) => {
-      userId=state.id
-      state.id = action.payload;
-      console.log(' output from UserSlice state= ',state.id)
+      console.log('Сработал  SETUSER ID')
+      console.log()
+      // state.id = action.payload;
+      state.userId=action.payload;
+      state.userPassID=state.userId.user.id
+      console.log(' output from UserSlice state= ',state.userId,typeof(state.userId),state.userId.user.id,'state.userPassID== ',state.userPassID)
+      
 
     },
     

@@ -5,16 +5,15 @@ import { fetchOrdersAction, updateOrderAction, deleteOrderAction } from '../stor
 
 const OrdersScreen = () => {
     const [refreshKey, setRefreshKey] = useState(0);
-
-// Call this function to trigger a re-render
-const triggerRerender = () => {
-  setRefreshKey((prevKey) => prevKey + 1);
-};
+    const triggerRerender = () => {
+      setRefreshKey((prevKey) => prevKey + 1);
+    };
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = () => {
-    setRefreshing(true);
-    dispatch(fetchOrdersAction()).finally(() => setRefreshing(false));
+      setRefreshing(true);
+      dispatch(fetchOrdersAction()).finally(() => setRefreshing(false));
+      // console.log(rerend)
     };
 
   const dispatch = useDispatch();
@@ -26,17 +25,29 @@ const triggerRerender = () => {
   // Fetch orders when the component mounts
   useEffect(() => {
     dispatch(fetchOrdersAction());
-    
+    triggerRerender(); 
+    console.log('Orders updated:', orders,refreshKey);
   }, [dispatch]);
+
+  useEffect(() => {
+    console.log('Orders updated:', orders,refreshKey);
+  }, [orders]);
 
   // Handle updating the order
   const handleUpdateOrder = (orderId) => {
     console.log('сработал handleUpdateOrder')
-    if (editedOrder.address || editedOrder.phone) {
-      dispatch(updateOrderAction(orderId, editedOrder));
+    if (editedOrder.additionalNotes || editedOrder.time) {
+      dispatch(updateOrderAction(orderId, editedOrder))
+      .then(()=>{
+        dispatch(fetchOrdersAction());
+      })
       setEditingOrderId(null); // Reset editing state
       setEditedOrder({}); // Clear the edited order
-    
+
+        
+        
+        setRefreshKey(prev => prev + 1); // Trigger a re-render
+      
     }
   };
 
@@ -72,7 +83,7 @@ const triggerRerender = () => {
   // Set editing fields when editing an order
   const handleEditOrder = (order) => {
     setEditingOrderId(order.id);
-    setEditedOrder({ address: order.address, phone: order.phone }); // Initialize edited order with address and phone
+    setEditedOrder({ address: order.additionalNotes, phone: order.time }); // Initialize edited order with address and phone
   };
 
   // Handle change in address or phone field
@@ -90,15 +101,15 @@ const triggerRerender = () => {
         <>
           <TextInput
             style={styles.input}
-            placeholder="Новый адрес"
-            value={editedOrder.address}
-            onChangeText={(value) => handleInputChange('address', value)}
+            placeholder="Комментарий курьеру"
+            value={editedOrder.additionalNotes}
+            onChangeText={(value) => handleInputChange('additionalNotes', value)}
           />
           <TextInput
             style={styles.input}
-            placeholder="Новый телефон"
-            value={editedOrder.phone}
-            onChangeText={(value) => handleInputChange('phone', value)}
+            placeholder="Новое время"
+            value={editedOrder.time}
+            onChangeText={(value) => handleInputChange('time', value)}
           />
           <Button title="Сохранить" onPress={() => handleUpdateOrder(item.id)} />
         </>
@@ -106,8 +117,8 @@ const triggerRerender = () => {
         <>
    
           {/* <Text style={styles.orderText}>Заказ ID: {item.id}</Text> */}
-          <Text style={styles.orderText}>Адрес: {item.address}</Text>
-          <Text style={styles.orderText}>Телефон: {item.phone}</Text>
+          <Text style={styles.orderText}>Комментарий курьеру: {item.additionalNotes}</Text>
+          <Text style={styles.orderText}>Время доставки: {item.time}</Text>
           <Text style={styles.orderText}>Статус: {item.status}</Text>
           <View style={styles.buttonContainer}>
             <Button title="Редактировать" onPress={() => handleEditOrder(item)} />

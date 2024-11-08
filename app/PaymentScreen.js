@@ -18,9 +18,11 @@ const fakePaymentProcessing = async (cardNumber, expiration, cvv) => {
 };
 
 const PaymentScreen = ({ navigation ,route}) => {
+  const { profileData } = route.params; // Destructure orderData from route params
   const { orderData } = route.params; // Destructure orderData from route params
   const cartItems = useSelector((state) => state.cart.items); // Get cart items from Redux store
   console.log('1 orderDataFROM payment Screen- ', orderData)
+  console.log('2 ProfileDataFROM payment Screen- ', profileData)
   const [cardNumber, setCardNumber] = useState('');
   const [expiration, setExpiration] = useState('');
   const [cvv, setCvv] = useState('');
@@ -42,7 +44,6 @@ const PaymentScreen = ({ navigation ,route}) => {
     
       dispatch(createOrderAction({ 
         orderData 
-      
       }));
       // dispatch(createOrderAction({ cardNumber, expiration, cvv }))
       Alert.alert('Success', 'Payment successful! Your order is confirmed.');

@@ -2,6 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { setUserId } from './userSlice';
+
 const initialState = {
   phone: '',
   streetOrHomeNumber: '',
@@ -58,7 +59,7 @@ export const createProfileAction = ({ profileData }) => async (dispatch) => {
   // dispatch(setEntrance(profileData.entrance));
   // dispatch(setFloor(profileData.floor));
 
-  const { phone, streetOrHomeNumber, apartmentOrOffice, entrance, floor,OrderId } = profileData;
+  const { phone, streetOrHomeNumber, apartmentOrOffice, entrance, floor,OrderId} = profileData;
   // const order_ids = OrderId.map(item => [item.id, item.quantity]);
   // console.log()
   try {
@@ -69,12 +70,6 @@ export const createProfileAction = ({ profileData }) => async (dispatch) => {
       ApartmentOrOffice:apartmentOrOffice,
       Entrance:entrance,
       Floor:floor,
-
-      // phone:'1232' ,
-      // streetOrHomeNumber:'3445',
-      // apartmentOrOffice:'a34',
-      // entrance:'3434',
-      // floor:'111',
      
     });
     
@@ -83,12 +78,12 @@ export const createProfileAction = ({ profileData }) => async (dispatch) => {
     dispatch(setUserId(response.data))
     
     // You can add further steps like navigating to another screen or updating additional data
-    Alert('Профиль успешно обновлен!', 'Ваши данные были успешно сохранены.');
+    // Alert('Профиль успешно обновлен!', 'Ваши данные были успешно сохранены.');
 
   } catch (error) {
     // Handle errors
     console.error('Error creating profile:', error);
-    Alert.alert('Ошибка!', 'Не удалось сохранить данные. Попробуйте еще раз.');
+    // Alert.alert('Ошибка!', 'Не удалось сохранить данные. Попробуйте еще раз.');
     throw error;
   }
 };

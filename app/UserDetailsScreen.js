@@ -13,6 +13,7 @@ import { createProfileAction } from '../store/slices/guestUserSlice';
 const UserDetailsScreen = ({navigation ,route}) => {
   const { orderData } = route.params;
   console.log('ORDER DATA FROM USER DETAILSSCREEN= ',orderData.id)
+
   const OrderId=orderData.id
   // const orderDataIds=orderData.map((item)=>{
   //   console.log('item= ',item)
@@ -48,7 +49,7 @@ const UserDetailsScreen = ({navigation ,route}) => {
     // Show success message
     // Alert('Данные сохранены', 'Ваши данные успешно сохранены!');
 
-    navigation.navigate('Payment', {orderData});
+    navigation.navigate('Payment', {orderData,profileData});
     
   };
 
